@@ -10,11 +10,11 @@ import UIKit
 // MARK: - 폰트 명을 열거형으로 선언
 enum AppFontName: String {
     
-    case boldFont = "SF-Pro-Display-Bold"
-    case mediumFont = "SF-Pro-Display-Medium"
-    case regularFont = "SF-Pro-Display-Regular"
-    case lightFont = "SF-Pro-Display-Light"
-    case thinFont = "SF-Pro-Display-Thin"
+    case boldFont = "SFProDisplay-Bold"
+    case mediumFont = "SFProDisplay-Medium"
+    case regularFont = "SFProDisplay-Regular"
+    case lightFont = "SFProDisplay-Light"
+    case thinFont = "SFProDisplay-Thin"
     
     var name: String {
         return self.rawValue
