@@ -28,7 +28,7 @@ class HomeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func goToNextView() {
-        let VC = WeatherInfoViewController()
+        let VC = DetailViewController()
         navigationController?.pushViewController(VC, animated: true)
     }
     
