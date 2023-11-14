@@ -24,10 +24,15 @@ extension UITextField {
     
     // 왼쪽에 이미지 사진 넣기
     func addLeftImage(image: UIImage) {
-        let leftImage = UIImageView(frame: CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height))
+        let leftImage = UIImageView(frame: CGRect(x: 8, y: 0, width: image.size.width, height: image.size.height))
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: image.size.width + 16, height: image.size.height))
+        
+        paddingView.addSubview(leftImage)
 
         leftImage.image = image
-        self.leftView = leftImage
+        leftImage.tintColor = .lightGray
+        
+        self.leftView = paddingView
         self.leftViewMode = .always
     }
 }
