@@ -7,19 +7,60 @@
 
 import Foundation
 
-struct Weather {
-    let title: String
-    let subTitle: String
-    let temperature: String
-    let weather: String
-    let tempMaxMin: String
-    let weatherImage: String
+struct WeatherDataModel: Codable {
+    let coord: Coord
+    let weather: [Weather]
+    let base: String
+    let main: Main
+    let visibility: Int
+    let wind: Wind
+    let clouds: Clouds
+    let dt: Int
+    let sys: Sys
+    let timezone, id: Int
+    let name: String
+    let cod: Int
 }
 
-let dummyData: [Weather] = [
-    Weather(title: "나의 위치", subTitle: "서울특별시", temperature: "9°", weather: "흐림", tempMaxMin: "최고:9° 최저:-1°", weatherImage: "cellBackground"),
-    Weather(title: "노원구", subTitle: "오전 12:02", temperature: "9°", weather: "흐림", tempMaxMin: "최고:9° 최저:-1°", weatherImage: "cellBackground"),
-    Weather(title: "청주시", subTitle: "오전 12:02", temperature: "12°", weather: "흐림", tempMaxMin: "최고:12° 최저:-1°", weatherImage: "cellBackground"),
-    Weather(title: "제주특별자치도", subTitle: "오전 12:02", temperature: "14°", weather: "비", tempMaxMin: "최고:14° 최저:6°", weatherImage: "cellBackground"),
-    Weather(title: "뉴캐슬어폰타인", subTitle: "오후 3:02", temperature: "8°", weather: "부분적으로 흐림", tempMaxMin: "최고:8° 최저:3°", weatherImage: "cellBackground"),
-]
+// MARK: - Clouds
+struct Clouds: Codable {
+    let all: Int
+}
+
+// MARK: - Coord
+struct Coord: Codable {
+    let lon, lat: Double
+}
+
+// MARK: - Main
+struct Main: Codable {
+    let temp, feelsLike, tempMin, tempMax: Double
+    let pressure, humidity: Int
+
+    enum CodingKeys: String, CodingKey {
+        case temp
+        case feelsLike = "feels_like"
+        case tempMin = "temp_min"
+        case tempMax = "temp_max"
+        case pressure, humidity
+    }
+}
+
+// MARK: - Sys
+struct Sys: Codable {
+    let country: String
+    let sunrise, sunset: Int
+}
+
+// MARK: - Weather
+struct Weather: Codable {
+    let id: Int
+    let main, description, icon: String
+}
+
+// MARK: - Wind
+struct Wind: Codable {
+    let speed: Double
+    let deg: Int
+    let gust: Double?
+}
