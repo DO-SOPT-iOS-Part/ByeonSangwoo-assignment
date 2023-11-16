@@ -32,7 +32,7 @@ class TenDaysWeatherCollectionViewCell: UICollectionViewCell {
     
     func tenDaysWeatherBindData(data: TenDaysWeather) {
         self.day.text = data.day
-        self.weatherIconImage.image = UIImage(systemName: data.weatherIconImage)
+        self.weatherIconImage.image = UIImage(systemName: data.weatherIconImage)?.withRenderingMode(.alwaysOriginal)
         self.predictPercent.text = data.predictPercent
         self.tempMin.text = data.tempMin
         self.tempImage.image = UIImage(named: data.tempImage)
@@ -83,18 +83,18 @@ class TenDaysWeatherCollectionViewCell: UICollectionViewCell {
         
         tempMin.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalTo(weatherIconImage.snp.trailing).offset(15)
+            $0.centerX.equalToSuperview()
         }
         
         tempImage.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalTo(tempMin.snp.trailing).offset(8)
-            $0.height.equalTo(12)
+            $0.trailing.equalTo(tempMax.snp.leading).offset(-8)
+            $0.width.equalTo(100)
         }
         
         tempMax.snp.makeConstraints {
             $0.centerY.equalToSuperview()
-            $0.leading.equalTo(tempImage.snp.trailing).offset(3)
+            $0.trailing.equalToSuperview().offset(-30)
         }
     }
 }
