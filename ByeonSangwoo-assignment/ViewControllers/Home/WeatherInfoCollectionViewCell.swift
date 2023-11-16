@@ -30,13 +30,27 @@ class WeatherInfoCollectionViewCell: UICollectionViewCell {
     private let tempMaxMin = UILabel()
     private let imageView = UIImageView()
     
-    func bindData(data: Weather) {
-        self.title.text = data.title
-        self.subTitle.text = data.subTitle
-        self.temperature.text = data.temperature
-        self.weather.text = data.weather
-        self.tempMaxMin.text = data.tempMaxMin
-        self.imageView.image = UIImage(named: data.weatherImage)
+    func bindData(data: WeatherDataModel) {
+        if let korean = CountryName(rawValue: data.name) {
+            let koreanCountry = korean.translatedKorean()
+            self.title.text = koreanCountry
+        }
+        self.subTitle.text = convertTime(timezone: data.timezone)
+        self.temperature.text = "\(Int(data.main.temp - 273.15))°"
+        self.weather.text = String(data.weather[0].description)
+        self.tempMaxMin.text = "최고:\(Int(data.main.tempMax - 273.15))° 최저:\(Int(data.main.tempMin - 273.15))°"
+        self.imageView.image = UIImage(named: "cellBackground")
+    }
+    
+    func convertTime(timezone: Int) -> String {
+        let timeZone = TimeZone(secondsFromGMT: timezone)
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "a h:mm"
+        dateFormatter.timeZone = timeZone
+        let currentDate = Date()
+        let formattedTime = dateFormatter.string(from: currentDate)
+        return formattedTime
     }
     
     private func setStyle() {
