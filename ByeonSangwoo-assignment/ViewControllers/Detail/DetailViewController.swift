@@ -9,7 +9,8 @@ import UIKit
 
 class DetailViewController: UIViewController {
     
-    var selectedItem: Weather?
+    var selectedItem: WeatherDataModel?
+    var index: Int = 0
     
     private let scrollView = UIScrollView()
     private var contentView = UIView()
@@ -31,15 +32,6 @@ class DetailViewController: UIViewController {
     private let calendarIconImage = UIImageView()
     private let tenDaysTitle = UILabel()
     private let tenDaysCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
-    
-    // Bottom
-    private let bottomView = UIView()
-    private let bottomStackView = UIStackView()
-    private let mapButton = UIButton()
-    private let sliderStackView = UIStackView()
-    private let currentLocationIconImage = UIImageView()
-    private let otherLocationIconImage = UIImageView()
-    private let listButton = UIButton()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -84,6 +76,7 @@ class DetailViewController: UIViewController {
     private func setStyle() {
         scrollView.do {
             $0.contentInsetAdjustmentBehavior = .never
+            $0.showsVerticalScrollIndicator = false
         }
         
         backgroundImageView.do {
@@ -155,43 +148,6 @@ class DetailViewController: UIViewController {
             $0.backgroundColor = .clear
             $0.showsVerticalScrollIndicator = false
             $0.isScrollEnabled = false
-        }
-        
-        // Bottom StackView
-        bottomView.do {
-            $0.backgroundColor = UIColor(red: 0.165, green: 0.188, blue: 0.251, alpha: 1)
-        }
-        
-        bottomStackView.do {
-            $0.axis = .horizontal
-            $0.distribution = .equalSpacing
-            $0.alignment = .top
-        }
-        
-        mapButton.do {
-            $0.setImage(UIImage(systemName: "map"), for: .normal)
-            $0.tintColor = .white
-        }
-        
-        sliderStackView.do {
-            $0.axis = .horizontal
-            $0.distribution = .fillEqually
-        }
-        
-        currentLocationIconImage.do {
-            $0.image = UIImage(named: "startSlider")
-            $0.contentMode = .scaleAspectFit
-        }
-        
-        otherLocationIconImage.do {
-            $0.image = UIImage(named: "basicSlider")
-            $0.contentMode = .scaleAspectFit
-        }
-        
-        listButton.do {
-            $0.setImage(UIImage(systemName: "list.bullet"), for: .normal)
-            $0.tintColor = .white
-            $0.addTarget(self, action: #selector(listButtonTapped), for: .touchUpInside)
         }
     }
     
@@ -291,53 +247,16 @@ class DetailViewController: UIViewController {
             $0.leading.trailing.equalToSuperview().inset(15)
             $0.bottom.equalToSuperview()
         }
-        
-        // MARK: - Bottom StackView
-        self.view.addSubview(bottomView)
-        bottomView.addSubview(bottomStackView)
-        
-        bottomView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(82)
-        }
-        
-        bottomStackView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview().inset(20)
-            $0.bottom.equalToSuperview()
-            $0.height.equalTo(bottomView)
-        }
-        
-        bottomStackView.addArrangedSubviews(mapButton, sliderStackView, listButton)
-        
-        mapButton.snp.makeConstraints {
-            $0.height.equalTo(44)
-        }
-        
-//        sliderStackView.snp.makeConstraints {
-//            $0.top.equalToSuperview().offset(5)
-//        }
-        
-        listButton.snp.makeConstraints {
-            $0.height.equalTo(44)
-        }
-        
-        sliderStackView.addArrangedSubviews(currentLocationIconImage, otherLocationIconImage)
-        
-        currentLocationIconImage.snp.makeConstraints {
-            $0.height.equalTo(44)
-        }
-        
-        otherLocationIconImage.snp.makeConstraints {
-            $0.height.equalTo(44)
-        }
     }
     
-    private func bindData(data: Weather) {
-        self.location.text = data.title
-        self.temperature.text = data.temperature
-        self.weather.text = data.weather
-        self.tempMaxMin.text = data.tempMaxMin
+    private func bindData(data: WeatherDataModel) {
+        if let korean = CountryName(rawValue: data.name) {
+            let koreanCountry = korean.translatedKorean()
+            self.location.text = koreanCountry
+        }
+        self.temperature.text = "\(Int(data.main.temp - 273.15))°"
+        self.weather.text = data.weather[0].description
+        self.tempMaxMin.text = "최고:\(Int(data.main.tempMax - 273.15))° 최저:\(Int(data.main.tempMin - 273.15))°"
     }
     
     @objc func listButtonTapped() {
