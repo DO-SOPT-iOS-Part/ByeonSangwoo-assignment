@@ -16,7 +16,16 @@ class HomeViewController: UIViewController, UITextFieldDelegate {
     
     private let searchTextField = UITextField()
     private let weatherInfoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    
+    private let dummyCountries = ["seoul", "cheongju", "busan", "jeju", "ulsan"]
+    private var dummyData: [WeatherDataModel] = []
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        getWeatherAPIResult()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setDelegate()
@@ -28,7 +37,7 @@ class HomeViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func goToNextView() {
-        let VC = DetailViewController()
+        let VC = TotalDetailViewController()
         navigationController?.pushViewController(VC, animated: true)
     }
     
@@ -65,6 +74,14 @@ class HomeViewController: UIViewController, UITextFieldDelegate {
     }
     
     func setStyle() {
+        scrollView.do {
+            $0.showsVerticalScrollIndicator = false
+        }
+        
+        weatherInfoCollectionView.do {
+            $0.showsVerticalScrollIndicator = false
+        }
+        
         searchTextField.do {
             $0.placeholder = "도시 또는 공항 검색"
             
@@ -117,11 +134,28 @@ class HomeViewController: UIViewController, UITextFieldDelegate {
             $0.leading.trailing.bottom.equalToSuperview()
         }
     }
+    
+    private func getWeatherAPIResult() {
+        dummyData = []
+        Task {
+            do {
+                for country in dummyCountries {
+                    var dummyDataList = []
+                    guard let countryData = try await WeatherViewModel.shared.getWeatherAPI(country: country) else { return }
+                    dummyData.append(countryData)
+                }
+                self.weatherInfoCollectionView.reloadData()
+            } catch {
+                print(error)
+            }
+        }
+    }
 }
 
 extension HomeViewController: UICollectionViewDelegate {}
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("dummyData Count = \(dummyData.count)")
         return dummyData.count
     }
     
@@ -129,16 +163,17 @@ extension HomeViewController: UICollectionViewDataSource {
         guard let item = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherInfoCollectionViewCell.identifier,
                                                             for: indexPath) as? WeatherInfoCollectionViewCell else { return UICollectionViewCell() }
         item.bindData(data: dummyData[indexPath.row])
-        item.backgroundView = UIImageView(image: UIImage(named: dummyData[indexPath.row].weatherImage))
+        item.backgroundView = UIImageView(image: UIImage(named: "cellBackground"))
         return item
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedItem = dummyData[indexPath.item]
 
-        let detailViewController = DetailViewController()
-        detailViewController.selectedItem = selectedItem
+        let detailPageViewController = TotalDetailViewController()
+        detailPageViewController.dataArray = dummyData
+        detailPageViewController.currentIndex = indexPath.row
 
-        navigationController?.pushViewController(detailViewController, animated: true)
+        navigationController?.pushViewController(detailPageViewController, animated: true)
     }
 }

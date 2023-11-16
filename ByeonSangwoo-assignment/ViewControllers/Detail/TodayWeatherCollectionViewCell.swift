@@ -29,7 +29,7 @@ class TodayWeatherCollectionViewCell: UICollectionViewCell {
     
     func todayWeatherbindData(data: TodayWeather) {
         self.time.text = data.time
-        self.weatherImageView.image = UIImage(systemName: data.weatherImage)
+        self.weatherImageView.image = UIImage(systemName: data.weatherImage)?.withRenderingMode(.alwaysOriginal)
         self.temperature.text = data.temperature
     }
     
